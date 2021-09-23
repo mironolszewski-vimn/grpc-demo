@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+option go_package = "./protos";
+
+import "google/protobuf/wrappers.proto";
+
+package library;
+
+service Library {
+    // A server-to-client streaming RPC.
+    rpc ListBooks(ListBooksRequest) returns (stream Book) {}
+    rpc FilterBooks(FilterBooksRequest) returns (stream Book) {}
+    // rpc ReserveBook(ReserveBookRequest) returns (stream ReserveBookResponse) {}
+}
+
+message ListBooksRequest {}
+
+message Book {
+    int32 id = 1;
+    string title = 2;
+    repeated Author authors = 3;
+}
+
+message Author {
+    int32 id = 1;
+    string name = 2;
+}
+
+message FilterBooksRequest {
+    google.protobuf.StringValue title = 1;
+    google.protobuf.StringValue authorName = 2;
+}
+
+// message ReserveBookRequest {
+//     int32 id = 1;
+// }
+
+// message ReserveBookResponse {
+//     int32 id = 1;
+//     string status = 2;
+// }
