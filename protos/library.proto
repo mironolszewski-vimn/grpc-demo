@@ -10,7 +10,7 @@ service Library {
     // A server-to-client streaming RPC.
     rpc ListBooks(ListBooksRequest) returns (stream Book) {}
     rpc FilterBooks(FilterBooksRequest) returns (stream Book) {}
-    // rpc ReserveBook(ReserveBookRequest) returns (stream ReserveBookResponse) {}
+    rpc SubscribeForBookUpdates(SubscribeForBookUpdatesRequest) returns (stream Book) {}
 }
 
 message ListBooksRequest {}
@@ -31,11 +31,6 @@ message FilterBooksRequest {
     google.protobuf.StringValue authorName = 2;
 }
 
-// message ReserveBookRequest {
-//     int32 id = 1;
-// }
+message SubscribeForBookUpdatesRequest {
 
-// message ReserveBookResponse {
-//     int32 id = 1;
-//     string status = 2;
-// }
+}

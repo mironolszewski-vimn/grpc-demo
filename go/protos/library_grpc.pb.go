@@ -21,6 +21,7 @@ type LibraryClient interface {
 	// A server-to-client streaming RPC.
 	ListBooks(ctx context.Context, in *ListBooksRequest, opts ...grpc.CallOption) (Library_ListBooksClient, error)
 	FilterBooks(ctx context.Context, in *FilterBooksRequest, opts ...grpc.CallOption) (Library_FilterBooksClient, error)
+	SubscribeForBookUpdates(ctx context.Context, in *SubscribeForBookUpdatesRequest, opts ...grpc.CallOption) (Library_SubscribeForBookUpdatesClient, error)
 }
 
 type libraryClient struct {
@@ -95,6 +96,38 @@ func (x *libraryFilterBooksClient) Recv() (*Book, error) {
 	return m, nil
 }
 
+func (c *libraryClient) SubscribeForBookUpdates(ctx context.Context, in *SubscribeForBookUpdatesRequest, opts ...grpc.CallOption) (Library_SubscribeForBookUpdatesClient, error) {
+	stream, err := c.cc.NewStream(ctx, &Library_ServiceDesc.Streams[2], "/library.Library/SubscribeForBookUpdates", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &librarySubscribeForBookUpdatesClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type Library_SubscribeForBookUpdatesClient interface {
+	Recv() (*Book, error)
+	grpc.ClientStream
+}
+
+type librarySubscribeForBookUpdatesClient struct {
+	grpc.ClientStream
+}
+
+func (x *librarySubscribeForBookUpdatesClient) Recv() (*Book, error) {
+	m := new(Book)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // LibraryServer is the server API for Library service.
 // All implementations must embed UnimplementedLibraryServer
 // for forward compatibility
@@ -102,6 +135,7 @@ type LibraryServer interface {
 	// A server-to-client streaming RPC.
 	ListBooks(*ListBooksRequest, Library_ListBooksServer) error
 	FilterBooks(*FilterBooksRequest, Library_FilterBooksServer) error
+	SubscribeForBookUpdates(*SubscribeForBookUpdatesRequest, Library_SubscribeForBookUpdatesServer) error
 	mustEmbedUnimplementedLibraryServer()
 }
 
@@ -114,6 +148,9 @@ func (UnimplementedLibraryServer) ListBooks(*ListBooksRequest, Library_ListBooks
 }
 func (UnimplementedLibraryServer) FilterBooks(*FilterBooksRequest, Library_FilterBooksServer) error {
 	return status.Errorf(codes.Unimplemented, "method FilterBooks not implemented")
+}
+func (UnimplementedLibraryServer) SubscribeForBookUpdates(*SubscribeForBookUpdatesRequest, Library_SubscribeForBookUpdatesServer) error {
+	return status.Errorf(codes.Unimplemented, "method SubscribeForBookUpdates not implemented")
 }
 func (UnimplementedLibraryServer) mustEmbedUnimplementedLibraryServer() {}
 
@@ -170,6 +207,27 @@ func (x *libraryFilterBooksServer) Send(m *Book) error {
 	return x.ServerStream.SendMsg(m)
 }
 
+func _Library_SubscribeForBookUpdates_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(SubscribeForBookUpdatesRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(LibraryServer).SubscribeForBookUpdates(m, &librarySubscribeForBookUpdatesServer{stream})
+}
+
+type Library_SubscribeForBookUpdatesServer interface {
+	Send(*Book) error
+	grpc.ServerStream
+}
+
+type librarySubscribeForBookUpdatesServer struct {
+	grpc.ServerStream
+}
+
+func (x *librarySubscribeForBookUpdatesServer) Send(m *Book) error {
+	return x.ServerStream.SendMsg(m)
+}
+
 // Library_ServiceDesc is the grpc.ServiceDesc for Library service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -186,6 +244,11 @@ var Library_ServiceDesc = grpc.ServiceDesc{
 		{
 			StreamName:    "FilterBooks",
 			Handler:       _Library_FilterBooks_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "SubscribeForBookUpdates",
+			Handler:       _Library_SubscribeForBookUpdates_Handler,
 			ServerStreams: true,
 		},
 	},

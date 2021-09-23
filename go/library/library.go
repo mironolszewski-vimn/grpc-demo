@@ -18,29 +18,42 @@ var books = []*pb.Book{
 	{Id: 4, Title: "Hamlet", Authors: []*pb.Author{authors[2]}},
 }
 
-func ListBooks() []*pb.Book {
-	return books
+type bookQueryBuilder struct {
+	title      string
+	authorName string
 }
 
-func FilterBooks(title string, authorName string) []*pb.Book {
+func NewBookQueryBuilder() *bookQueryBuilder {
+	return &bookQueryBuilder{}
+}
+
+func (b *bookQueryBuilder) FilterTitle(title string) {
+	b.title = title
+}
+
+func (b *bookQueryBuilder) FilterAuthorName(authorName string) {
+	b.authorName = authorName
+}
+
+func (b *bookQueryBuilder) GetBooks() []*pb.Book {
 	books := books
 
-	if title != "" {
+	if b.title != "" {
 		filtered := make([]*pb.Book, 0)
 		for _, book := range books {
-			if strings.Contains(strings.ToLower(book.Title), strings.ToLower(title)) {
+			if strings.Contains(strings.ToLower(book.Title), strings.ToLower(b.title)) {
 				filtered = append(filtered, book)
 			}
 		}
 		books = filtered
 	}
 
-	if authorName != "" {
+	if b.authorName != "" {
 		filtered := make([]*pb.Book, 0)
 	bookLoop:
 		for _, book := range books {
 			for _, author := range book.Authors {
-				if strings.Contains(strings.ToLower(author.Name), strings.ToLower(authorName)) {
+				if strings.Contains(strings.ToLower(author.Name), strings.ToLower(b.authorName)) {
 					filtered = append(filtered, book)
 					continue bookLoop
 				}

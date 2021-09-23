@@ -24,6 +24,11 @@ class LibraryStub(object):
                 request_serializer=library__pb2.FilterBooksRequest.SerializeToString,
                 response_deserializer=library__pb2.Book.FromString,
                 )
+        self.SubscribeForBookUpdates = channel.unary_stream(
+                '/library.Library/SubscribeForBookUpdates',
+                request_serializer=library__pb2.SubscribeForBookUpdatesRequest.SerializeToString,
+                response_deserializer=library__pb2.Book.FromString,
+                )
 
 
 class LibraryServicer(object):
@@ -42,6 +47,12 @@ class LibraryServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def SubscribeForBookUpdates(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_LibraryServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -53,6 +64,11 @@ def add_LibraryServicer_to_server(servicer, server):
             'FilterBooks': grpc.unary_stream_rpc_method_handler(
                     servicer.FilterBooks,
                     request_deserializer=library__pb2.FilterBooksRequest.FromString,
+                    response_serializer=library__pb2.Book.SerializeToString,
+            ),
+            'SubscribeForBookUpdates': grpc.unary_stream_rpc_method_handler(
+                    servicer.SubscribeForBookUpdates,
+                    request_deserializer=library__pb2.SubscribeForBookUpdatesRequest.FromString,
                     response_serializer=library__pb2.Book.SerializeToString,
             ),
     }
@@ -95,6 +111,23 @@ class Library(object):
             metadata=None):
         return grpc.experimental.unary_stream(request, target, '/library.Library/FilterBooks',
             library__pb2.FilterBooksRequest.SerializeToString,
+            library__pb2.Book.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SubscribeForBookUpdates(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_stream(request, target, '/library.Library/SubscribeForBookUpdates',
+            library__pb2.SubscribeForBookUpdatesRequest.SerializeToString,
             library__pb2.Book.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

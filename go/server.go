@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"time"
 
 	"google.golang.org/grpc"
 
@@ -18,20 +19,39 @@ type libraryServer struct {
 }
 
 func (s libraryServer) ListBooks(request *pb.ListBooksRequest, server pb.Library_ListBooksServer) error {
-	for _, book := range library.ListBooks() {
-		server.Send(book)
-	}
-	return nil
-}
+	bookQueryBuilder := library.NewBookQueryBuilder()
 
-func (s libraryServer) FilterBooks(request *pb.FilterBooksRequest, server pb.Library_FilterBooksServer) error {
-	books := library.FilterBooks(request.Title.GetValue(), request.AuthorName.GetValue())
+	books := bookQueryBuilder.GetBooks()
 	for _, book := range books {
 		server.Send(book)
 	}
 	return nil
 }
 
+func (s libraryServer) FilterBooks(request *pb.FilterBooksRequest, server pb.Library_FilterBooksServer) error {
+	bookQueryBuilder := library.NewBookQueryBuilder()
+	bookQueryBuilder.FilterTitle(request.Title.GetValue())
+	bookQueryBuilder.FilterAuthorName(request.AuthorName.GetValue())
+
+	books := bookQueryBuilder.GetBooks()
+	for _, book := range books {
+		server.Send(book)
+	}
+	return nil
+}
+
+func (s libraryServer) SubscribeForBookUpdates(request *pb.SubscribeForBookUpdatesRequest, server pb.Library_SubscribeForBookUpdatesServer) error {
+	c := make(chan struct{})
+
+	go func() {
+		time.Sleep(time.Second * 5)
+		server.Send(&pb.Book{Id: 100, Title: "New Book"})
+		close(c)
+	}()
+
+	<-c
+	return nil
+}
 func main() {
 	lis, err := net.Listen("tcp", SERVER_ADDRESS)
 	if err != nil {

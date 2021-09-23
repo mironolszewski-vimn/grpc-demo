@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=b'Z\010./protos',
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\rlibrary.proto\x12\x07library\x1a\x1egoogle/protobuf/wrappers.proto\"\x12\n\x10ListBooksRequest\"C\n\x04\x42ook\x12\n\n\x02id\x18\x01 \x01(\x05\x12\r\n\x05title\x18\x02 \x01(\t\x12 \n\x07\x61uthors\x18\x03 \x03(\x0b\x32\x0f.library.Author\"\"\n\x06\x41uthor\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x0c\n\x04name\x18\x02 \x01(\t\"s\n\x12\x46ilterBooksRequest\x12+\n\x05title\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x30\n\nauthorName\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue2\x83\x01\n\x07Library\x12\x39\n\tListBooks\x12\x19.library.ListBooksRequest\x1a\r.library.Book\"\x00\x30\x01\x12=\n\x0b\x46ilterBooks\x12\x1b.library.FilterBooksRequest\x1a\r.library.Book\"\x00\x30\x01\x42\nZ\x08./protosb\x06proto3'
+  serialized_pb=b'\n\rlibrary.proto\x12\x07library\x1a\x1egoogle/protobuf/wrappers.proto\"\x12\n\x10ListBooksRequest\"C\n\x04\x42ook\x12\n\n\x02id\x18\x01 \x01(\x05\x12\r\n\x05title\x18\x02 \x01(\t\x12 \n\x07\x61uthors\x18\x03 \x03(\x0b\x32\x0f.library.Author\"\"\n\x06\x41uthor\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x0c\n\x04name\x18\x02 \x01(\t\"s\n\x12\x46ilterBooksRequest\x12+\n\x05title\x18\x01 \x01(\x0b\x32\x1c.google.protobuf.StringValue\x12\x30\n\nauthorName\x18\x02 \x01(\x0b\x32\x1c.google.protobuf.StringValue\" \n\x1eSubscribeForBookUpdatesRequest2\xda\x01\n\x07Library\x12\x39\n\tListBooks\x12\x19.library.ListBooksRequest\x1a\r.library.Book\"\x00\x30\x01\x12=\n\x0b\x46ilterBooks\x12\x1b.library.FilterBooksRequest\x1a\r.library.Book\"\x00\x30\x01\x12U\n\x17SubscribeForBookUpdates\x12\'.library.SubscribeForBookUpdatesRequest\x1a\r.library.Book\"\x00\x30\x01\x42\nZ\x08./protosb\x06proto3'
   ,
   dependencies=[google_dot_protobuf_dot_wrappers__pb2.DESCRIPTOR,])
 
@@ -175,6 +175,31 @@ _FILTERBOOKSREQUEST = _descriptor.Descriptor(
   serialized_end=298,
 )
 
+
+_SUBSCRIBEFORBOOKUPDATESREQUEST = _descriptor.Descriptor(
+  name='SubscribeForBookUpdatesRequest',
+  full_name='library.SubscribeForBookUpdatesRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=300,
+  serialized_end=332,
+)
+
 _BOOK.fields_by_name['authors'].message_type = _AUTHOR
 _FILTERBOOKSREQUEST.fields_by_name['title'].message_type = google_dot_protobuf_dot_wrappers__pb2._STRINGVALUE
 _FILTERBOOKSREQUEST.fields_by_name['authorName'].message_type = google_dot_protobuf_dot_wrappers__pb2._STRINGVALUE
@@ -182,6 +207,7 @@ DESCRIPTOR.message_types_by_name['ListBooksRequest'] = _LISTBOOKSREQUEST
 DESCRIPTOR.message_types_by_name['Book'] = _BOOK
 DESCRIPTOR.message_types_by_name['Author'] = _AUTHOR
 DESCRIPTOR.message_types_by_name['FilterBooksRequest'] = _FILTERBOOKSREQUEST
+DESCRIPTOR.message_types_by_name['SubscribeForBookUpdatesRequest'] = _SUBSCRIBEFORBOOKUPDATESREQUEST
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 ListBooksRequest = _reflection.GeneratedProtocolMessageType('ListBooksRequest', (_message.Message,), {
@@ -212,6 +238,13 @@ FilterBooksRequest = _reflection.GeneratedProtocolMessageType('FilterBooksReques
   })
 _sym_db.RegisterMessage(FilterBooksRequest)
 
+SubscribeForBookUpdatesRequest = _reflection.GeneratedProtocolMessageType('SubscribeForBookUpdatesRequest', (_message.Message,), {
+  'DESCRIPTOR' : _SUBSCRIBEFORBOOKUPDATESREQUEST,
+  '__module__' : 'library_pb2'
+  # @@protoc_insertion_point(class_scope:library.SubscribeForBookUpdatesRequest)
+  })
+_sym_db.RegisterMessage(SubscribeForBookUpdatesRequest)
+
 
 DESCRIPTOR._options = None
 
@@ -222,8 +255,8 @@ _LIBRARY = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=301,
-  serialized_end=432,
+  serialized_start=335,
+  serialized_end=553,
   methods=[
   _descriptor.MethodDescriptor(
     name='ListBooks',
@@ -241,6 +274,16 @@ _LIBRARY = _descriptor.ServiceDescriptor(
     index=1,
     containing_service=None,
     input_type=_FILTERBOOKSREQUEST,
+    output_type=_BOOK,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='SubscribeForBookUpdates',
+    full_name='library.Library.SubscribeForBookUpdates',
+    index=2,
+    containing_service=None,
+    input_type=_SUBSCRIBEFORBOOKUPDATESREQUEST,
     output_type=_BOOK,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
